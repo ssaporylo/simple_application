@@ -1,0 +1,12 @@
+*.swp
+*.pyc
+__pycache__
+*.egg-info/
+dist/
+*.DS_Store
+*.iml
+.eggs
+.coverage
+cover
+venv/
+nosetests.xml
