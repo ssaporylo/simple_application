@@ -1,26 +1,33 @@
+import os.path
+import re
+
 from setuptools import find_packages, setup
+
+requirements_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'requirements', 'requirements.txt')
+requirements_test_path = os.path.join(
+    os.path.abspath(os.path.dirname(__file__)),
+    'requirements',
+    'requirements_test.txt'
+)
+
+
+def get_requirments(file_path):
+    with open(file_path, 'rt') as f:
+        data = f.read()
+    return re.findall(r"[A-Za-z][A-Za-z0-9\-\.]+==[0-9\.\-A-Za-z]*", data)
+
+
+requirements = get_requirments(requirements_path)
+requirements_test = get_requirments(requirements_test_path)
+
 
 setup(
     name="simple_application",
     description="Simple application",
     version="0.0.1",
+    install_requires=requirements,
+    zip_safe=False,
     packages=find_packages(),
-    install_requires=[
-        "aiocache==0.11.1",
-        "aiohttp==3.5.4",
-        "asyncio==3.4.3",
-        "click==7.0",
-        "sanic==18.12.0",
-    ],
-    extras_require={
-        "test": [
-            "asynctest==0.13.0",
-            "flake8==3.5.0",
-            "flake8-import-order==0.17.1",
-            "pytest==4.3.1",
-            "pytest-sanic==1.6.1"
-        ]
-    },
-    test_suite="nose.collector",
+    extras_require={"dev": requirements_test, "test": requirements_test},
     platforms="Python 3.7 and later.",
 )

@@ -22,8 +22,15 @@ help:
 .PHONY: setup
 setup: clean
 	@echo ' -- Setting up environment'
-	sudo apt-get -y install python3-dev python3-pip
-	sudo pip3 install virtualenv
+	if [ -n "`which apt`" ];\
+	    then sudo apt -y install virtualenv python3-dev python3-pip ;\
+    elif [ -n "`which yum`" ];\
+        then sudo yum -y install virtualenv python3-dev python3-pip;\
+    else \
+        echo 'Please install virtualenv, python3-dev, python3-pip packages';\
+        exit 1;\
+    fi;\
+	sudo pip install virtualenv
 	virtualenv -p python3.7 venv
 	pip install -e .'[dev,test]'
 	@echo ' -- Environment is ready'
@@ -41,7 +48,7 @@ flake:
 
 .PHONY: test
 test: flake
-	py.test tests
+	venv/bin/py.test tests
 
 .PHONY: coverage
 coverage: flake
@@ -50,4 +57,4 @@ coverage: flake
 
 .PHONY: run-dev
 run-dev:
-	python manage.py runserver
+	venv/bin/python manage.py runserver
